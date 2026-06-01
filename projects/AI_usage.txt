@@ -1,0 +1,6 @@
+#Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+data = data[~data["Country"].astype(str).str.strip().str.isdigit()]
+data = data[~data["InvoiceNo"].astype(str).str.startswith("C")]
+data = data[(data["Quantity"] > 0) & (data["UnitPrice"] > 0)]
+
