@@ -2,7 +2,7 @@
 ABSCHLUSSBERICHT
 Online Retail - Umsatzvorhersage und Kundenklassifikation
 Data Science Gruppenprojekt, 2. Semester
-Mitglieder: Nicolas König, Henri Hoffmann, Philipp Freiherr von Esebeck, Anton Eitenbichler, Adrian Hoerburger
+Mitglieder: Nicolas König, Adrian Hoerburger
 ========================================================================
 
 
