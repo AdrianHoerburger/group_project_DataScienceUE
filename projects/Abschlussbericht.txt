@@ -1,0 +1,124 @@
+========================================================================
+ABSCHLUSSBERICHT
+Online Retail - Umsatzvorhersage und Kundenklassifikation
+Data Science Gruppenprojekt, 2. Semester
+Mitglieder: Nicolas König, Henri Hoffmann, Philipp Freiherr von Esebeck, Anton Eitenbichler, Adrian Hörburger
+========================================================================
+
+
+1. AUFGABENSTELLUNG
+------------------------------------------------------------------------
+Ziel des Projekts war es, einen zugewiesenen Datensatz zu laden, zu
+bereinigen, zu explorieren, eine Machine-Learning-Strategie zu
+entwickeln und ein Modell zu trainieren und zu bewerten.
+
+
+2. DATENSATZ UND EIN WICHTIGES PROBLEM
+------------------------------------------------------------------------
+Das mitgelieferte README beschreibt den "Online Shoppers Purchasing
+Intention"-Datensatz mit einer fertigen Zielspalte "Revenue" (Kauf
+ja/nein, Verteilung 84,5 % zu 15,5 %).
+
+Die tatsaechlich bereitgestellte CSV-Datei enthielt jedoch einen
+ANDEREN Datensatz: den "Online Retail"-Datensatz mit rohen
+Transaktionsdaten (Spalten: InvoiceNo, StockCode, Description,
+Quantity, InvoiceDate, UnitPrice, CustomerID, Country). Eine Spalte
+"Revenue" existiert darin nicht.
+
+Diese Diskrepanz zwischen README und CSV haben wir als zentrales
+Datenproblem identifiziert und dokumentiert. Da keine fertige
+Zielvariable vorhanden war, haben wir den Umsatz selbst aus den Daten
+berechnet.
+
+
+3. DATENBEREINIGUNG
+------------------------------------------------------------------------
+Beim Laden mussten mehrere Eigenheiten beruecksichtigt werden:
+- Die erste Zeile ist ein Beschreibungstext (skiprows=1).
+- Trennzeichen ist ein Semikolon, Dezimaltrenner ist ein Komma.
+- Eine fehlerhafte Zeile mit "ERROR"-Praefix wird beim Laden
+  uebersprungen.
+
+Anschliessend wurden folgende Zeilen entfernt, da sie fuer eine
+kundenbezogene Umsatzanalyse ungeeignet sind:
+- komplett leere Zeilen,
+- Zeilen ohne CustomerID oder ohne gueltiges Datum,
+- ein ungueltiger Laenderwert "0",
+- Stornierungen (InvoiceNo beginnt mit "C"),
+- Retouren (negative Quantity) und Preise <= 0.
+
+Begruendung: Stornierungen und Retouren wuerden den berechneten Umsatz
+verfaelschen (Rueckbuchungen ergeben negative Betraege). Ohne CustomerID
+ist keine Zuordnung zu einem Kunden moeglich.
+
+Von urspruenglich 541.910 Zeilen blieben 397.883 Zeilen mit 4.338
+eindeutigen Kunden uebrig.
+
+
+4. MACHINE-LEARNING-STRATEGIE
+------------------------------------------------------------------------
+Da die Daten auf Transaktionsebene vorlagen, das Ziel aber kundenbezogen
+ist, haben wir die Daten pro Kunde aggregiert (eine Zeile pro Kunde).
+
+Berechnete Groessen je Kunde:
+- Revenue (Gesamtumsatz, = Zielvariable)
+- AnzahlArtikel (verschiedene Produkte)
+- AnzahlKaeufe (Anzahl Bestellungen)
+- DurchschnPreis (mittlerer Artikelpreis)
+
+Wir haben zwei Aufgaben umgesetzt:
+
+a) REGRESSION: Vorhersage des Gesamtumsatzes pro Kunde.
+b) KLASSIFIKATION: Einteilung in "wertvolle Kunden" (ja/nein). Der
+   Schwellenwert wurde so gewaehlt, dass dieselbe Klassenverteilung wie
+   im README entsteht (15,5 % wertvolle Kunden).
+
+Wichtig: Die Zielvariable Revenue wurde NICHT als Eingabe-Merkmal
+verwendet, da die Klassifikations-Zielvariable direkt daraus berechnet
+wird (Vermeidung von Datenleck).
+
+
+5. ERGEBNISSE
+------------------------------------------------------------------------
+REGRESSION (Bewertung auf Testdaten):
+- Decision Tree:      R2 = 0.25   MAE = 1674   RMSE = 8780
+- Lineare Regression: R2 = 0.32   MAE = 1520   RMSE = 8323
+
+Overfitting-Check (Train vs. Test, R2):
+- Decision Tree:      Train 0.56  /  Test 0.25  -> deutliches Overfitting
+- Lineare Regression: Train 0.30  /  Test 0.32  -> kein Overfitting
+
+Der Decision Tree passt sich den Trainingsdaten zu stark an. Die
+lineare Regression generalisiert gleichmaessiger und ist hier das
+robustere Modell. Die absoluten Fehler sind hoch, weil der Umsatz stark
+rechtsschief ist (wenige Kunden mit sehr hohem Umsatz).
+
+KLASSIFIKATION (Bewertung auf Testdaten):
+- Decision Tree:  Accuracy = 0.91   F1 = 0.72   Precision = 0.75   Recall = 0.69
+- KNN:            Accuracy = 0.91   F1 = 0.69   Precision = 0.73   Recall = 0.66
+
+Die hohe Accuracy (~0.91) taeuscht: Da nur 15,5 % der Kunden "wertvoll"
+sind, erreicht man bereits ~84,5 % Accuracy, indem man immer "normal"
+vorhersagt. Der F1-Score (~0.72) ist daher die aussagekraeftigere
+Kennzahl. Dies zeigt, warum man bei unausgewogenen Klassen nicht nur
+auf die Accuracy schauen darf.
+
+
+6. VERBESSERUNGSIDEEN
+------------------------------------------------------------------------
+- Umsatz logarithmieren, um die starke Rechtsschiefe zu daempfen.
+- Weitere Merkmale einbeziehen (z. B. erster Kaufmonat, Land).
+- Hyperparameter des Decision Tree anpassen, um das Overfitting zu
+  reduzieren (z. B. kleinere max_depth).
+
+
+7. EINSATZ VON LLMs
+------------------------------------------------------------------------
+Ein LLM (Claude) wurde genutzt fuer die Strukturierung des Notebooks,
+die Fehlersuche beim Laden der fehlerhaften CSV und die Erklaerung der
+Schritte. Die Code-Bausteine, die ueber den Unterrichtsstoff
+hinausgehen, sind in der Datei "KI_Nutzung.txt" einzeln aufgefuehrt.
+
+Jede Code-Zeile wurde von der Gruppe nachvollzogen und verstanden. Die
+Gruppe steht vollumfaenglich fuer den eingereichten Code ein.
+========================================================================
