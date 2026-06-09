@@ -1,6 +1,64 @@
 Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
 
-data = data[~data["Country"].astype(str).str.strip().str.isdigit()]
-data = data[~data["InvoiceNo"].astype(str).str.startswith("C")]
-data = data[(data["Quantity"] > 0) & (data["UnitPrice"] > 0)]
+    data = data[~data["Country"].astype(str).str.strip().str.isdigit()]
+    data = data[~data["InvoiceNo"].astype(str).str.startswith("C")]
+    data = data[(data["Quantity"] > 0) & (data["UnitPrice"] > 0)]
 
+Daten laden:
+Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+    on_bad_lines="skip",
+
+(Im Unterricht wurde read_csv nur mit sep, skiprows und decimal
+verwendet, nie mit on_bad_lines. Dient zum Ueberspringen der
+fehlerhaften "ERROR"-Zeile.)
+
+
+Daten bereinigen:
+Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+    data = data[~data["Country"].astype(str).str.strip().str.isdigit()]
+    data = data[~data["InvoiceNo"].astype(str).str.startswith("C")]
+    data = data[(data["Quantity"] > 0) & (data["UnitPrice"] > 0)]
+
+(Neu sind: das ~ (Negation), die .str-Methoden, das Kombinieren von
+Bedingungen mit & und .astype(str). Im Unterricht wurden nur .dropna(),
+.notna() und .loc[] verwendet.)
+
+
+Umsatz berechnen:
+Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+    data["LinePrice"] = data["Quantity"] * data["UnitPrice"]
+
+(Das Berechnen einer neuen Spalte aus zwei bestehenden Spalten wurde im
+Unterricht nicht gezeigt.)
+
+
+Umsatz pro Kunde / Eine Zeile pro Kunde:
+Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+    revenue_df = data.groupby("CustomerID")["LinePrice"].sum().reset_index()
+    revenue_df = revenue_df.rename(columns={"LinePrice": "Revenue"})
+
+    kunden = data.groupby("CustomerID").agg(
+        Revenue       =("LinePrice", "sum"),
+        AnzahlArtikel =("StockCode", "nunique"),
+        AnzahlKaeufe  =("InvoiceNo", "nunique"),
+        DurchschnPreis=("UnitPrice", "mean")
+    ).reset_index()
+
+(groupby(), .agg(), "nunique", .reset_index() und .rename() kamen im
+Unterricht nicht vor.
+
+
+Zielvariable bilden (Klassifikation):
+Diese Code Zeilen wurden von einem LLM (Claude) vorgeschlagen:
+
+    schwelle = kunden["Revenue"].quantile(0.845)
+    kunden["WertvollerKunde"] = (kunden["Revenue"] > schwelle).astype(int)
+
+(.quantile() und das Erzeugen einer 0/1-Spalte aus einem Vergleich
+wurden im Unterricht nicht behandelt. Der Schwellenwert wurde so
+gewaehlt, dass dieselbe Klassenverteilung wie im README entsteht,
+15,5 % wertvolle Kunden.)
