@@ -2,7 +2,7 @@
 ABSCHLUSSBERICHT
 Online Retail - Umsatzvorhersage und Kundenklassifikation
 Data Science Gruppenprojekt, 2. Semester
-Mitglieder: Nicolas König, Henri Hoffmann, Philipp Freiherr von Esebeck, Anton Eitenbichler, Adrian Hörburger
+Mitglieder: Nicolas König, Henri Hoffmann, Philipp Freiherr von Esebeck, Anton Eitenbichler, Adrian Hoerburger
 ========================================================================
 
 
@@ -20,12 +20,12 @@ Intention"-Datensatz mit einer fertigen Zielspalte "Revenue" (Kauf
 ja/nein, Verteilung 84,5 % zu 15,5 %).
 
 Die tatsaechlich bereitgestellte CSV-Datei enthielt jedoch einen
-ANDEREN Datensatz: den "Online Retail"-Datensatz mit rohen
+anderen Datensatz: den "Online Retail"-Datensatz mit rohen
 Transaktionsdaten (Spalten: InvoiceNo, StockCode, Description,
 Quantity, InvoiceDate, UnitPrice, CustomerID, Country). Eine Spalte
 "Revenue" existiert darin nicht.
 
-Diese Diskrepanz zwischen README und CSV haben wir als zentrales
+Diesen Unterschied zwischen README und CSV haben wir als zentrales
 Datenproblem identifiziert und dokumentiert. Da keine fertige
 Zielvariable vorhanden war, haben wir den Umsatz selbst aus den Daten
 berechnet.
@@ -81,11 +81,11 @@ wird (Vermeidung von Datenleck).
 5. ERGEBNISSE
 ------------------------------------------------------------------------
 REGRESSION (Bewertung auf Testdaten):
-- Decision Tree:      R2 = 0.25   MAE = 1674   RMSE = 8780
+- Decision Tree:      R2 = 0.45   MAE = 1674   RMSE = 7528
 - Lineare Regression: R2 = 0.32   MAE = 1520   RMSE = 8323
 
 Overfitting-Check (Train vs. Test, R2):
-- Decision Tree:      Train 0.56  /  Test 0.25  -> deutliches Overfitting
+- Decision Tree:      Train 0.56  /  Test 0.45  -> Overfitting
 - Lineare Regression: Train 0.30  /  Test 0.32  -> kein Overfitting
 
 Der Decision Tree passt sich den Trainingsdaten zu stark an. Die
@@ -102,23 +102,3 @@ sind, erreicht man bereits ~84,5 % Accuracy, indem man immer "normal"
 vorhersagt. Der F1-Score (~0.72) ist daher die aussagekraeftigere
 Kennzahl. Dies zeigt, warum man bei unausgewogenen Klassen nicht nur
 auf die Accuracy schauen darf.
-
-
-6. VERBESSERUNGSIDEEN
-------------------------------------------------------------------------
-- Umsatz logarithmieren, um die starke Rechtsschiefe zu daempfen.
-- Weitere Merkmale einbeziehen (z. B. erster Kaufmonat, Land).
-- Hyperparameter des Decision Tree anpassen, um das Overfitting zu
-  reduzieren (z. B. kleinere max_depth).
-
-
-7. EINSATZ VON LLMs
-------------------------------------------------------------------------
-Ein LLM (Claude) wurde genutzt fuer die Strukturierung des Notebooks,
-die Fehlersuche beim Laden der fehlerhaften CSV und die Erklaerung der
-Schritte. Die Code-Bausteine, die ueber den Unterrichtsstoff
-hinausgehen, sind in der Datei "KI_Nutzung.txt" einzeln aufgefuehrt.
-
-Jede Code-Zeile wurde von der Gruppe nachvollzogen und verstanden. Die
-Gruppe steht vollumfaenglich fuer den eingereichten Code ein.
-========================================================================
